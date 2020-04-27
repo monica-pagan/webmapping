@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <!--Load the AJAX API-->
+   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load("current", {packages:['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ["State", "Death Toll", { role: "style" } ],
+        ["New York", 8.94, "#b87333"],
+        ["Pennsylvania", 10.49, "silver"],
+        ["New Jersey", 19.30, "gold"],
+        ["Massachusetts", 21.45, "color: #e5e4e2"]
+      ]);
+
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" },
+                       2]);
+
+      var options = {
+        title: "Density of Precious Metals, in g/cm^3",
+        width: 600,
+        height: 400,
+        bar: {groupWidth: "95%"},
+        legend: { position: "none" },
+      };
+      var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+      chart.draw(view, options);
+  }
+  </script>
+<div id="columnchart_values" style="width: 900px; height: 300px;"></div>
+    </script>
+  </head>
+
+  <body>
+    Div that will hold the pie chart
+    <div id="chart_div"></div>
+  </body>
+</html>
+
+
+
+
+
+
+    <footer>
+        <p>Monica Pagan</p>
+        <p>This map shows the percentage of gas left while traveling to Philadelphia. It is able to show what amount of planes traveling to Philadelphia have more or less than 75% of gas left in their tanks through the colors. Through this chart, it is seen that there is only one location that is able to maintain above 75%. It also shows through the chart that the other locations are unable to maintain above that required amount and must be refilled after landing in Philadelphia's airport. This is shown by the colors blue and red respectively. These are colors that most individuals are familiar. This is important as most individuals may be able to associate red with no and blue with yes allowing the reader to not have to guess the information because of the chart's colors.</p>
+    </footer>
+
+In addition add one page that details the decisions you made when making these visualizations. What story are these visualizations telling? How are they telling these stories?
+
+
+For every $5 in Supplemental Nutrition Assistance Program (SNAP) funds that recipients spend at farmers' markets, they earn $2 in Philly Food Bucks, which can only be used to buy fruits and vegetables at any of Philadelphia's 26 Food Trust-run farmers' markets.
