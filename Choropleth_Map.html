@@ -2,7 +2,7 @@
 <html>
 <head>
 	
-	<title>Choropleth Tutorial - Leaflet</title>
+	<title>COVID-19 Deaths in NY, NJ, PA and Mass</title>
 
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,18 +39,8 @@
     
 <script type="text/javascript">
 
-	var map = L.map('map').setView([37.8, -96], 4);
+	var map = L.map('map').setView([42.526699, -75.524320], 6);
 
-//	L.tileLayer('pk.eyJ1IjoibW9ucGFnIiwiYSI6ImNrOWJycGh4OTAyMWgzZWw3cmFnNXRmYzgifQ.FIHlJSY7o4yEziSjeT_28A', {
-//		maxZoom: 18,
-//		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-//			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-//			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-//		id: 'mapbox/light-v9',
-//		tileSize: 512,
-//		zoomOffset: -1
-//	}).addTo(map);
-    
     
 	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
 		maxZoom: 18,
@@ -63,7 +53,6 @@
 	}).addTo(map);
 
 
-	// control that shows state info on hover
 	var info = L.control();
 
 	info.onAdd = function (map) {
@@ -74,25 +63,16 @@
 
     info.update = function (test) {
 		this._div.innerHTML = '<h4> Covid-19 Deaths </h4>' +  (test ?
-			'<b>' + test.state + ' ' + test.admin + '</b><br />' + test.death + '  deaths '
-			: 'Hover over a state');
+			'<b> State: </b>' + test.state + ' ' + "<br>" + "<b>County: </b>" + test.admin + '<br>' + "<b> Death(s): </b>" + test.death 
+			: 'Hover over county');
 	};
     
-//    #maybe change the name in order for the city and state to work
-//    
-//	info.update = function (props) {
-//		this._div.innerHTML = '<h4> Covid-19 Deaths </h4>' +  (props ?
-//			'<b>' + 'City or Town: ' + props.TOWN2 +'</b><br />' +  props.coviddeath  +  '  death(s)'
-//			: 'Hover over a state');
-//	};
-//    
-
-
 
 	info.addTo(map);
 
 
-	// get color depending on population density value
+    
+    
 	function getColor(d) {
 		return  d > 5000 ? '#4E0707':
                 d > 2000 ? '#800000':
@@ -102,42 +82,18 @@
 				d > 100   ? '#FF4C4C':
                 d > 50    ? '#FF9999' :
                 d > 25    ? '#FFB2B2' :
-                d > 0    ? '#FFE2E2' :
-                d > null  ? '#808080':
+                d > 0    ? '#FFE5E5' :
+                d == 0   ? '#FFFFFF' :
                             '#808080';
                             
-        
-//        
-//        
-//        		return d > 10000 ? '#800026' :
-//                d > 5000 ? '#ba3030':
-//                d > 3000 ? '#FF1919':
-//                d > 2000 ? '#FF3333':
-//				d > 1500  ? '#FF4C4C' :
-//				d > 1000  ? '#FF6666' :
-//				d > 750  ? '#FF9999' :
-//				d > 500   ? '#FFB2B2' :
-//				d > 250   ? '#FFCCCC' :
-//				d > 50   ? '#FFE5E5':
-//                d > 0    ? '#FFFFFF' :
-//                d > null  ? '#808080':
-//                            '#808080';
-                            
-        
-        
-        
-        
-        
-        
-        
-        //#FFFFFF
+    
 	}
 
 	function style(feature) {
 		return {
 			weight: 2,
 			opacity: 1,
-			color: 'white',
+			color: 'grey',
 			dashArray: '3',
 			fillOpacity: 0.7,
 			fillColor: getColor(feature.properties.death)
@@ -161,6 +117,10 @@
 		info.update(layer.feature.properties);
 	}
 
+    var nydeaths = 0;
+    var padeaths = 0;
+    var njdeaths = 0;
+    var massdeaths = 0;
 	var geojson;
 
 	function resetHighlight(e) {
@@ -178,6 +138,9 @@
 			mouseout: resetHighlight,
 			click: zoomToFeature
 		});
+
+        
+        
 	}
 
    
@@ -202,21 +165,36 @@
 		onEachFeature: onEachFeature
 	}).addTo(map);
     
-//	map.attributionControl.addAttribution('Population data &copy; <a href="http://census.gov/">US Census Bureau</a>');
-
 
 	var legend = L.control({position: 'bottomright'});
 
 	legend.onAdd = function (map) {
 
 		var div = L.DomUtil.create('div', 'info legend'),
-			grades = [null, 0, 25, 50, 100, 250, 500, 1000, 2000, 5000],
+			grades = [0, 25, 50, 100, 250, 500, 1000, 2000, 5000],
 			labels = [],
 			from, to;
+         
+        labels.push(
+        '<i style="background:' + getColor(null) + '"></i> ' + null);
+        //this is going to set the background color to grey
         
         
+        labels.push (
+        '<i style="background:' + getColor(0) + '"></i> ' + 0);
+        
+        
+        
+        for (var i = 0; i < grades.length; i++) {
+			from = grades[i];
+			to = grades[i + 1];
 
-
+			labels.push(
+				'<i style="background:' + getColor(from + 1) + '"></i> ' +
+				from + (to ? '&ndash;' + to : '+'));
+		}
+        
+        
 
 		div.innerHTML = labels.join('<br>');
 		return div;
